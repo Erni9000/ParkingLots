@@ -1,6 +1,6 @@
 package parking
 
-// Creating multidimensional List
+
 class ParkingLot(
     var parkingNumber: Int,
     var car: Car? = null
@@ -22,18 +22,17 @@ class Car(
     var carColor: String = ""
 )
 class ParkHouse(
-    private val size: Int,
-    private var parkingLots: MutableList<ParkingLot> = emptyList<ParkingLot>() as MutableList<ParkingLot>
+     size: Int,
+     var parkingLots: MutableList<ParkingLot> = mutableListOf()
 ) {
     init {
-        for (i in 1 until  size) this.addLot(ParkingLot(i))
+        for (i in 1..  size) parkingLots.add(ParkingLot(i))
+        //println(parkingLots.size)
     }
-    fun addLot(parkingLot: ParkingLot){
-        parkingLots.plus(parkingLot)
-    }
-
     fun getEmptySpace(): Int {
+      //  println(parkingLots.size)
         for (i in 0 until parkingLots.size) {
+           // println(i)
             if (parkingLots[i].isEmpty()) {
                 return i
             }
@@ -41,35 +40,38 @@ class ParkHouse(
         return -1
     }
 
-    fun parkCar(car: Car): Boolean {
+    fun park(car: Car): Boolean {
         var lotID = getEmptySpace()
         if (lotID == -1) return false
         return parkingLots[lotID].parkCar(car)
     }
     fun clearCar(lotID: Int) {
-        parkingLots[lotID].clearCar()
+        parkingLots[lotID-1].clearCar()
     }
 
 }
 
-
-fun parking(parkingLotOne: ParkingLot, parkingLotTwo: ParkingLot){
-       Loop@while (true){
-           val userInput = readln().filter { it != '.' }.split(" ") as MutableList<String>
-            when(userInput[0]) {
-                "park" -> {
-                   continue@Loop
-                }
-                "leave" -> {
-                  continue@Loop
-                }
-                "exit" -> {
-                    break@Loop
-                }
-            }
-       }
-}
 fun main() {
-    val ParkingHouse: ParkHouse = ParkHouse(20)
+    val ParkHouse: ParkHouse = ParkHouse(20)
+    Loop@while (true){
+        val userInput = readln().filter { it != '.' }.split(" ") as MutableList<String>
+        when(userInput[0]) {
+            "park" -> {
+                val parkingNumber: Int = ParkHouse.getEmptySpace()
+                val Car: Car = Car(userInput[1], userInput[2])
+                if(ParkHouse.park(Car)) println("${Car.carColor} car parked in spot ${parkingNumber+1}.")
+                else println("Sorry, the parking lot is full.")
+                continue@Loop
+            }
+            "leave" -> {
+                ParkHouse.clearCar(userInput[1].toInt())
+                println("Spot ${userInput[1].toInt()} is free.")
+                continue@Loop
+            }
+            "exit" -> {
+                break@Loop
+            }
+        }
+    }
 
 }
