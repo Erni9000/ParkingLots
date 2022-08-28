@@ -39,7 +39,13 @@ class ParkHouse(
         }
         return -1
     }
-
+    fun printStatus(): String {
+        var status: String = ""
+        for (i in 0 until parkingLots.size) {
+            if (!parkingLots[i].isEmpty()) status += "${i+1} ${parkingLots[i].car?.carNumber} ${parkingLots[i].car?.carColor}\n"
+        }
+        return status
+    }
     fun park(car: Car): Boolean {
         var lotID = getEmptySpace()
         if (lotID == -1) return false
@@ -52,25 +58,48 @@ class ParkHouse(
 }
 
 fun main() {
-    val ParkHouse: ParkHouse = ParkHouse(20)
+    var ParkHouse: ParkHouse = ParkHouse(1)
+    var parkhouseCreated: Boolean = false
     Loop@while (true){
         val userInput = readln().filter { it != '.' }.split(" ") as MutableList<String>
         when(userInput[0]) {
+            "create" -> {
+                if (userInput[1].toInt() > 0){
+                     ParkHouse = ParkHouse(userInput[1].toInt())
+                    parkhouseCreated = true
+                    println("Created a parking lot with ${ParkHouse.parkingLots.size} spots.")
+                    continue@Loop
+                }
+            }
             "park" -> {
-                val parkingNumber: Int = ParkHouse.getEmptySpace()
-                val Car: Car = Car(userInput[1], userInput[2])
-                if(ParkHouse.park(Car)) println("${Car.carColor} car parked in spot ${parkingNumber+1}.")
-                else println("Sorry, the parking lot is full.")
+                if (parkhouseCreated){
+                    val parkingNumber: Int = ParkHouse.getEmptySpace()
+                    val Car: Car = Car(userInput[1], userInput[2])
+                    if(ParkHouse.park(Car)) println("${Car.carColor} car parked in spot ${parkingNumber+1}.")
+                    else println("Sorry, the parking lot is full.")
+                } else println("Sorry, a parking lot has not been created.")
+
                 continue@Loop
             }
             "leave" -> {
-                ParkHouse.clearCar(userInput[1].toInt())
-                println("Spot ${userInput[1].toInt()} is free.")
-                continue@Loop
+                if (parkhouseCreated){
+                    ParkHouse.clearCar(userInput[1].toInt())
+                    println("Spot ${userInput[1].toInt()} is free.")
+                    continue@Loop
+                } else println("Sorry, a parking lot has not been created.")
+
             }
             "exit" -> {
                 break@Loop
             }
+            "status" -> {
+                if (parkhouseCreated){
+                    if (ParkHouse.printStatus() == "") println("Parking lot is empty.")
+                    else print(ParkHouse.printStatus())
+                } else println("Sorry, a parking lot has not been created.")
+
+            }
+
         }
     }
 
