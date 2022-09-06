@@ -56,6 +56,45 @@ class ParkHouse(
     }
 
 }
+fun regByColor(inputColor: String, ParkHouse: ParkHouse):String {
+    var plates: String = ""
+    for (i in 0 until ParkHouse.parkingLots.size){
+        if (!ParkHouse.parkingLots[i].isEmpty()){
+            if (ParkHouse.parkingLots[i].car?.carColor?.uppercase() ?: false == inputColor.uppercase() && ParkHouse.parkingLots[i].car?.carNumber != null ){
+                plates += ParkHouse.parkingLots[i].car?.carNumber + ", "
+            }
+        }
+    }
+    return if (plates != "") {
+        plates.substring(0, plates?.length -2)
+    } else plates
+
+}
+fun spotByColor(inputColor: String, ParkHouse: ParkHouse):String {
+    var plates: String = ""
+    for (i in 0 until ParkHouse.parkingLots.size){
+        if (!ParkHouse.parkingLots[i].isEmpty()){
+            if (ParkHouse.parkingLots[i].car?.carColor?.uppercase() ?: false == inputColor.uppercase() && ParkHouse.parkingLots[i].car?.carNumber != null ){
+                plates += "${i+1}, "
+            }
+        }
+    }
+    return if (plates != "") {
+        plates.substring(0, plates?.length -2)
+    } else plates
+
+}
+fun spotByReg(inputColor: String, ParkHouse: ParkHouse):String {
+    var plates: String = ""
+    for (i in 0 until ParkHouse.parkingLots.size) {
+        if (!ParkHouse.parkingLots[i].isEmpty()) {
+            if (ParkHouse.parkingLots[i].car?.carNumber?.uppercase() ?: false == inputColor.uppercase() && ParkHouse.parkingLots[i].car?.carColor != null) {
+                plates += "${i + 1}"
+            }
+        }
+    }
+    return plates
+}
 
 fun main() {
     var ParkHouse: ParkHouse = ParkHouse(1)
@@ -98,6 +137,24 @@ fun main() {
                     else print(ParkHouse.printStatus())
                 } else println("Sorry, a parking lot has not been created.")
 
+            }
+            "reg_by_color" -> {
+                if (parkhouseCreated){
+                    if (regByColor(userInput[1],ParkHouse) == "") println("No cars with color ${userInput[1].uppercase()} were found.")
+                    else println(regByColor(userInput[1],ParkHouse))
+                } else println("Sorry, a parking lot has not been created.")
+            }
+            "spot_by_color" ->{
+                if (parkhouseCreated){
+                    if (spotByColor(userInput[1],ParkHouse) == "") println("No cars with color ${userInput[1].uppercase()} were found.")
+                    else println(spotByColor(userInput[1],ParkHouse))
+                } else println("Sorry, a parking lot has not been created.")
+            }
+            "spot_by_reg" -> {
+                if (parkhouseCreated){
+                    if (spotByReg(userInput[1],ParkHouse) == "") println("No cars with registration number ${userInput[1].uppercase()} were found.")
+                    else println(spotByReg(userInput[1],ParkHouse))
+                } else println("Sorry, a parking lot has not been created.")
             }
 
         }
